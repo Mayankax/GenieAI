@@ -6,7 +6,7 @@
     width: 80%;
     position: absolute;
     bottom: 0;
-    background-color: #2c2937;
+    background-color: #e7dbcc;
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -25,7 +25,7 @@
 
     button,label{
         border-radius: 50%;
-        background-color: #605e68;
+        background-color: #c4b19b;
         border: none;
         padding: 10px;
         display: flex;

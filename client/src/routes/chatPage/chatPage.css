@@ -11,6 +11,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        background-color: #ece4db;
 
         .chat{
             width: 80%;
@@ -24,9 +25,10 @@
 
             .message{
                 padding: 20px;
+                margin-top: 5px;
 
                 &.user{
-                    background-color: #2c2937;
+                    background-color: #f9f5ea;
                     border-radius: 20px;
                     max-width: 80%;
                     align-self: flex-end;
@@ -43,7 +45,7 @@
     }
     
     .wrapper::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.09); /* Light translucent scrollbar */
+        background: #ded2c5; /* Light translucent scrollbar */
         border-radius: 10px;
     }
     

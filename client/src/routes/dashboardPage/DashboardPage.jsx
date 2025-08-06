@@ -43,7 +43,7 @@ const DashboardPage = () =>{
                         <span>Create a New Chat</span>
                     </div>
                     <div className="option">
-                        <img src="/image.png" alt="" />
+                        <img src="/women.png" alt="" />
                         <span>Analyze Images</span>
                     </div>
                     <div className="option">
