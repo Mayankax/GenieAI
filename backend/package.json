@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon --env-file .env index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "@tanstack/react-query": "^5.66.9",
     "backend": "file:",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "express": "^4.21.2",
     "imagekit": "^6.0.0",
     "mongoose": "^8.10.1",
