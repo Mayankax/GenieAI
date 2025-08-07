@@ -12,7 +12,7 @@ const Homepage = () =>{
             <div className="left">
                 <h1>GENIE AI</h1>
                 <h2>Supercharge your creativtiy and productivity</h2>
-                <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos eius accusamus minima illo molestias.</h3>
+                <h3>Let Genie AI assist you in creating smarter, sharper, and more meaningful work and enhancing productivity with cutting-edge intelligence.</h3>
                 <Link to="/dashboard">Get Started</Link>
             </div>
             <div className="right">
