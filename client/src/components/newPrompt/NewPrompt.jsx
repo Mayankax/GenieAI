@@ -15,6 +15,7 @@ const NewPrompt = ({ data }) => {
     dbData: {},
     aiData: {},
   });
+  const [inputText, setInputText] = useState("");
 
   const chat = model.startChat({
     history: [
@@ -96,6 +97,7 @@ const NewPrompt = ({ data }) => {
     if (!text) return;
 
     add(text,false);
+    setInputText("");
   };
 
   const hasRun = useRef(false);
@@ -130,7 +132,14 @@ const NewPrompt = ({ data }) => {
       <form className="newForm" onSubmit={handleSubmit}>
         <Upload setImg={setImg} />
         <input id="file" type="file" multiple={false} hidden />
-        <input type="text" name="text" placeholder="Ask anything..." />
+        <input
+          type="text"
+          name="text"
+          placeholder="Ask anything..."
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+        />
+
         <button>
           <img src="/arrow.png" alt="" />
         </button>
