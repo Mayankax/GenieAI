@@ -5,6 +5,8 @@ import { IKImage } from "imagekitio-react";
 import model from "../../lib/gemini";
 import Markdown from "react-markdown";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
+
 
 const NewPrompt = ({ data }) => {
   const [question, setQuestion] = useState("");
@@ -36,34 +38,37 @@ const NewPrompt = ({ data }) => {
   }, [question, answer, img.dbData]);
 
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
   const mutation = useMutation({
-    mutationFn: () => {
-      return fetch(`${import.meta.env.VITE_API_URL}/api/chats/${data._id}`, {
+    mutationFn: async () => {
+      const token = await getToken();
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${data._id}`, {
         method: "PUT",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           question: question.length ? question : undefined,
           answer,
-          img : img.dbData?.filePath || undefined,
+          img: img.dbData?.filePath || undefined,
         }),
-      }).then((res) => res.json());
+      });
+
+      if (!res.ok) throw new Error("Failed to update chat");
+
+      return res.json();
     },
     onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["chat",data._id] }.then(()=>{
-        setQuestion("");
-        setAnswer("");
-        setImg({
-          isLoading: false,
-          error: "",
-          dbData: {},
-          aiData: {}
-        });
-      }));
-      navigate(`/dashboard/chats/${id}`);
+      queryClient.invalidateQueries({ queryKey: ["chat", data._id] });
+      setQuestion("");
+      setAnswer("");
+      setImg({
+        isLoading: false,
+        error: "",
+        dbData: {},
+        aiData: {},
+      });
     },
     onError: (error) => {
       console.error(error);
@@ -80,7 +85,6 @@ const NewPrompt = ({ data }) => {
       let accumulatedText = "";
       for await (const chunk of result.stream) {
         const chunkText = chunk.text();
-        console.log(chunkText);
         accumulatedText += chunkText;
         setAnswer(accumulatedText);
       }
