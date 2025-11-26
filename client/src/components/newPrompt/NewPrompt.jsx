@@ -40,27 +40,34 @@ const NewPrompt = ({ data }) => {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
   const mutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ question, answer, img }) => {
       const token = await getToken();
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/chats/${data._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          question: question.length ? question : undefined,
-          answer,
-          img: img.dbData?.filePath || undefined,
-        }),
-      });
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/chats/${data._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            question: question || undefined,
+            answer: answer || "",
+            img: img || undefined,
+          }),
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to update chat");
 
       return res.json();
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chat", data._id] });
+
+      // Reset state
       setQuestion("");
       setAnswer("");
       setImg({
@@ -70,30 +77,48 @@ const NewPrompt = ({ data }) => {
         aiData: {},
       });
     },
+
     onError: (error) => {
       console.error(error);
     },
   });
 
+
   
-  const add = async (text,isInitial) => {
-    if(!isInitial) setQuestion(text);
-    try{
+  const add = async (text, isInitial) => {
+    if (!isInitial) setQuestion(text);
+
+    try {
       const result = await chat.sendMessageStream(
-        Object.entries(img.aiData).length ? [img.aiData, text] : [text]
+        Object.entries(img.aiData).length
+          ? [img.aiData, text]
+          : [text]
       );
+
       let accumulatedText = "";
+
       for await (const chunk of result.stream) {
         const chunkText = chunk.text();
-        accumulatedText += chunkText;
-        setAnswer(accumulatedText);
+        if (chunkText) {
+          accumulatedText += chunkText;
+          setAnswer(accumulatedText);
+        }
       }
-      mutation.mutate();
-    }catch(err){
+
+      setAnswer(accumulatedText);
+
+      // FINAL FIX 🔥
+      mutation.mutate({
+        question: text,
+        answer: accumulatedText,
+        img: img.dbData?.filePath || null,
+      });
+
+    } catch (err) {
       console.error(err);
     }
-    
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
