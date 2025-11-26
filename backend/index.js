@@ -25,7 +25,7 @@ const connect = async () => {
     await mongoose.connect(process.env.MONGO);
     console.log("Connected to MongoDB");
   } catch (err) {
-    console.log.apply(err);
+    console.log(err);
   }
 };
 
@@ -96,7 +96,7 @@ app.get("/api/userchats", requireAuth(), async (req, res) => {
     const userChats = await UserChats.find({ userId });
 
     if (!userChats.length) {
-      return res.status(200).send([]); // Return an empty array if no chats exist
+      return res.status(200).send([]);
     }
 
     res.status(200).send(userChats[0].chats);
